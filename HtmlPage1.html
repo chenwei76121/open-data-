@@ -1,0 +1,212 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title></title>
+</head>
+<body>
+
+    <div class="container">
+        <div class="row" style="margin-bottom:20px">
+            <div class="col-12">
+                <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" style="width:1000px;height:400px">
+                    <div class="carousel-indicators">
+                        <button type="button" data-target="#carouselExampleIndicators" data-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                        <button type="button" data-target="#carouselExampleIndicators" data-slide-to="1" aria-label="Slide 2"></button>
+                        <button type="button" data-target="#carouselExampleIndicators" data-slide-to="2" aria-label="Slide 3"></button>
+                    </div>
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img src="https://i.imgur.com/wWpwDFG.jpg" class="d-block w-100" style="width:1000px;height:400px" alt="...">
+                            <div class="carousel-caption" d-done d-md-block">
+                                <h5></h5>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <img src="https://i.imgur.com/hSBgJq6.jpg" class="d-block w-100" style="width:1000px;height:400px" alt="...">
+                        </div>
+                        <div class="carousel-item">
+                            <img src="https://i.imgur.com/okxyl54.jpg" class="d-block w-100" style="width:1000px;height:400px" alt="...">
+                        </div>
+                    </div>
+                    <a href="#carouselExampleIndicators" class="carousel-control-prev" data-slide="prev">
+                        <span class="carousel-control-prev-icon"></span>
+                    </a>
+                    <a href="#carouselExampleIndicators" class="carousel-control-next" data-slide="next">
+                        <span class="carousel-control-next-icon"></span>
+                    </a>
+                </div>
+                <h1>口罩販賣數量搜尋</h1>
+
+                <input type="text" id="serchcity" style="width:225px" placeholder="請輸入縣市名稱 例:臺北市" />
+                <input type="text" id="serchshop" placeholder="請輸入藥局名稱" />
+                <button id="loadbtn1">Get Data</button>
+                <button id="loadbtn2">清除</button>
+                <hr />
+
+
+                <select id="city" name="city" class="form-group" aria-label="Default select example">
+                </select>
+
+                <select id="town" name="town" class="form-group" aria-label="Default select example">
+                    
+                </select>
+
+                <select id="shopname" name="shopname" class="form-group">
+                </select>
+
+                <button id="loadbtn3">Get Data</button>
+                <button id="loadbtn4">清除</button>
+
+                <div id="mydiv" class="row" style="text-align: center ">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <script>
+let url = "https://raw.githubusercontent.com/kiang/pharmacies/master/json/points.json";
+
+
+        var array = ["City", "基隆市", "臺北市", "新北市", "桃園市", "新竹市", "新竹縣", "苗栗縣", "臺中市", "彰化縣",
+            "南投縣", "雲林縣", "嘉義市", "嘉義縣", "臺南市", "高雄市", "屏東縣", "宜蘭縣", "花蓮縣", "臺東縣", "澎湖縣",
+            "連江縣", "金門縣"
+        ];
+
+        $.each(array, function (i) {
+
+            $('#city').append('<option id=\"city\" value="' + array[i] + '">' + array[i] + '</option>');
+        });
+
+        $.getJSON(url, function (data) {
+            $("#city").change(function () {
+                var cityselect = document.getElementById("city");
+                var cityresult = cityselect.value;
+                if (cityresult == "City") {
+
+                    $("#town option").remove();
+                    $("#shopname option").remove();
+
+                }
+                else {
+                    $("#town option").remove();
+                    $("#shopname option").remove();
+                    $("#town").append('<option value="' + "----" + '">' + "-----" + '</option>');
+
+                    var currentData = $.grep(data.features, function (item, i) {
+                        return item.properties.county == cityresult;
+                    });
+
+                    $.each(currentData, function (index, item) {
+                        
+                        $('#town').append('<option value="' + item.properties.town + '">' + item.properties.town + '</option>');
+                    });
+
+                }
+            });
+        });
+
+
+        $.getJSON(url, function (data) {
+            $("#town").change(function () {
+                
+                var townselect = document.getElementById("town");
+                var townresult = townselect.value; 
+                
+                    $("#shopname option").remove();
+                    var currentData = $.grep(data.features, function (item, i) {
+                        return item.properties.town == townresult;
+                    });
+
+                    $.each(currentData, function (index, item) {
+
+                        $('#shopname').append('<option value="' + item.properties.name + '">' + item.properties.name + '</option>');
+                    });
+
+                
+            });
+        });
+
+        $("#loadbtn3").click(function () {
+            $("div").remove(".col-sm");
+            $.getJSON(url, function (data) {
+                var cityselect = document.getElementById("city");
+                var cityresult = cityselect.value;
+                var shopnameselect = document.getElementById("shopname");
+                var shopnameresult = shopnameselect.value;
+                var townselect = document.getElementById("town");
+                var townresult = townselect.value; 
+                if (cityresult == "City") {
+                    alert("請選擇城市!!");
+                }
+                else if (townresult == "----") {
+                    alert("請選擇城鎮市區!!");
+                }
+                else {
+                    var currentData = $.grep(data.features, function (item, i) {
+                        return item.properties.county == cityresult && item.properties.name == shopnameresult && item.properties.town == townresult;
+                    })
+                }
+                $.each(currentData, function (index, item) {
+                    console.log(item);
+                    $("#mydiv").append("<div class=\"col-sm\"><div class=\"card\" style=\"width: 18rem; margin:10px\" ><div class=\"card-body\"><h5 class=\"card-title\">" + item.properties.county + "</h5><p class=\"card-text\">" + item.properties.name + "</p><p class=\"card-text\">" + item.properties.address + "</p><h5 class=\"card-title\">大人口罩數量:<p style=\"color:green \">" + item.properties.mask_adult + "</p></h5><h5 class=\"card-title\">小孩口罩數量:<p style=\"color:red \">" + item.properties.mask_child + "</p></h5></div></div></div>");
+
+                });
+            });
+        });
+
+        $("#loadbtn4").click(function () {
+            $("div").remove(".col-sm");
+            $("#city").val("City");
+            $("#town option").remove();
+            $("#shopname option").remove();
+        });
+
+        $("#loadbtn1").click(function () {
+            $("div").remove(".col-sm");
+            $.getJSON(url, function (data) {
+                var cities = document.getElementById("serchcity");
+                var opts = cities.value;
+                var shops = document.getElementById("serchshop");
+                var shopserch = shops.value;
+
+                if (shopserch == "" && opts == "") {
+                    alert("請至少輸入縣市名稱");
+                }
+                else if (shopserch == "") {
+                    var currentData = $.grep(data.features, function (item, i) {
+                        return item.properties.county == opts;
+                    });
+                }
+                else {
+                    var currentData = $.grep(data.features, function (item, i) {
+                        return item.properties.county == opts && item.properties.name == shopserch;
+                    });
+                }
+                $.each(currentData, function (index, item) {
+                    console.log(item);
+                    $("#mydiv").append("<div class=\"col-sm\"><div class=\"card\" style=\"width: 18rem; margin:10px\" ><div class=\"card-body\"><h5 class=\"card-title\">" + item.properties.county + "</h5><p class=\"card-text\">" + item.properties.name + "</p><p class=\"card-text\">" + item.properties.address + "</p><h5 class=\"card-title\">大人口罩數量:<p style=\"color:green \">" + item.properties.mask_adult + "</p></h5><h5 class=\"card-title\">小孩口罩數量:<p style=\"color:red \">" + item.properties.mask_child + "</p></h5></div></div></div>");
+                });
+            });
+        });
+
+        $("#loadbtn2").click(function () {
+            $("div").remove(".col-sm");
+            $("input[type=text]").val("");
+        });
+
+    </script>
+</body>
+</html>
